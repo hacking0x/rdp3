@@ -1,19 +1,26 @@
+name: RDP Tunnel Setup
+
+on:
+  workflow_dispatch:  # Allows you to manually trigger the RDP setup
+
 jobs:
   setup-rdp-tunnel:
     runs-on: windows-latest
+
     env:
       PLAYIT_AUTH_KEY: ${{ secrets.PLAYIT_AUTH_KEY }}
+
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Download Playit
+      - name: Download Playit Agent
         run: |
           Invoke-WebRequest -Uri "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-windows-x86_64-signed.exe" -OutFile "$env:USERPROFILE\playit.exe"
           Start-Sleep -Seconds 5
         shell: pwsh
 
-      - name: Enable RDP
+      - name: Enable Remote Desktop Protocol (RDP)
         run: |
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
@@ -26,6 +33,6 @@ jobs:
           Start-Process -FilePath "$env:USERPROFILE\playit.exe" -ArgumentList "--secret $env:PLAYIT_AUTH_KEY"
         shell: pwsh
 
-      - name: Keep the session alive
-        run: Start-Sleep -Seconds 11800
+      - name: Keep Session Alive
+        run: Start-Sleep -Seconds 11800  # Keeps session alive ~3 hours
         shell: pwsh
