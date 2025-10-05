@@ -34,5 +34,5 @@ jobs:
         shell: pwsh
 
       - name: Keep Session Alive
-        run: Start-Sleep -Seconds 11800  # Keeps session alive ~3 hours
+        run: Start-Sleep -Seconds 21600  # Keeps session alive ~6 hours
         shell: pwsh
